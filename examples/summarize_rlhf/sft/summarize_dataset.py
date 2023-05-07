@@ -29,6 +29,7 @@ class TLDRDataset(Dataset):
     def __init__(self, train_path, tokenizer, split, max_length=550):
         self.post_list = []
         dataset = load_dataset(train_path, split=split)
+        print("dataset length:", len(dataset))
         for sample in dataset:
             self.post_list.append(sample["prompt"] + sample["label"])
         if "valid" in split:

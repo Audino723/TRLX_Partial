@@ -94,10 +94,7 @@ def main(split):
     print(f"Datasetplit : {split}")
 
 if __name__ == "__main__":    
-    parser = argparse.ArgumentParser(description="The amount of data receive from hugginface")
-    parser.add_argument("split", help="")
-    args = parser.parse_args()
-    percentage_download = float(args.split) * 100
+    percentage_download = 1 * 100
 
     # Load the pre-trained reward model
     rw_tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
@@ -170,7 +167,9 @@ if __name__ == "__main__":
     max_length_input = config.train.seq_length - config.method.gen_kwargs["max_new_tokens"]
 
     dataset_train = load_dataset("CarperAI/openai_summarize_tldr", split=f"train[:{percentage_download}%]")
-    dataset_val = load_dataset("CarperAI/openai_summarize_tldr", split=f"valid[:{percentage_download}%]")
+    dataset_val = load_dataset("CarperAI/openai_summarize_tldr", split="valid")
+
+    print("Dataset length: ", "train", len(dataset_train), "val", len(dataset_val))
 
     # Store data into prompt and label pairs
     train_set = [(sample["prompt"], sample["label"]) for sample in dataset_train]

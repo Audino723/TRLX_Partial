@@ -22,10 +22,7 @@ def set_seed(seed_val=42):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="The amount of data receive from hugginface")
-    parser.add_argument("split", help="")
-    args = parser.parse_args()
-    percentage_download = float(args.split) * 100
+    percentage_download = 1
 
     output_dir = "gptj-supervised-summarize-checkpoint"
     train_batch_size = 16
@@ -57,7 +54,7 @@ if __name__ == "__main__":
     dev_dataset = TLDRDataset(
         data_path,
         tokenizer,
-        f"valid[:{percentage_download}%]",
+        "valid",
         max_length=max_input_length,
     )
 

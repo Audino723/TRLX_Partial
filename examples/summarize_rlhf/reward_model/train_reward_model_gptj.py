@@ -11,6 +11,9 @@ from transformers import AutoTokenizer, Trainer, TrainingArguments
 
 def create_comparison_dataset(path="CarperAI/openai_summarize_comparisons", split="train"):
     dataset = load_dataset(path, split=split)
+
+    print("Dataset length:", len(dataset))
+
     pairs = []
     for sample in tqdm(dataset):
         pair = {}
@@ -88,10 +91,7 @@ def compute_metrics(eval_preds):
 
 
 if __name__ == "__main__":    
-    parser = argparse.ArgumentParser(description="The amount of data receive from hugginface")
-    parser.add_argument("split", help="")
-    args = parser.parse_args()
-    percentage_download = float(args.split) * 100
+    percentage_download = 1
 
     tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
     tokenizer.pad_token = tokenizer.eos_token
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # Create the comparisons datasets
     data_path = "CarperAI/openai_summarize_comparisons"
     train_pairs = create_comparison_dataset(data_path, f"train[:{percentage_download}%]")
-    val_pairs = create_comparison_dataset(data_path, f"test[:{percentage_download}%]")
+    val_pairs = create_comparison_dataset(data_path, "test")
 
     # Make pairwise datasets for training
     max_length = 550
