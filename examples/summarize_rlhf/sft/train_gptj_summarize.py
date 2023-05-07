@@ -1,4 +1,5 @@
 import random
+import argparse
 
 import evaluate
 import numpy as np
@@ -11,8 +12,6 @@ from transformers import (
     TrainingArguments,
     default_data_collator,
 )
-
-import argparse
 
 
 def set_seed(seed_val=42):

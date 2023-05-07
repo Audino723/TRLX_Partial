@@ -1,5 +1,6 @@
 import os
 from typing import List
+import argparse
 
 import torch
 from datasets import load_dataset
@@ -92,7 +93,12 @@ config = TRLConfig(
 def main(split):
     print(f"Datasetplit : {split}")
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+    parser = argparse.ArgumentParser(description="The amount of data receive from hugginface")
+    parser.add_argument("split", help="")
+    args = parser.parse_args()
+    percentage_download = float(args.split) * 100
+
     # Load the pre-trained reward model
     rw_tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
     rw_tokenizer.pad_token = rw_tokenizer.eos_token
@@ -163,11 +169,12 @@ if __name__ == "__main__":
     tokenizer.padding_side = "left"
     max_length_input = config.train.seq_length - config.method.gen_kwargs["max_new_tokens"]
 
-    dataset = load_dataset("CarperAI/openai_summarize_tldr")
+    dataset_train = load_dataset("CarperAI/openai_summarize_tldr", split=f"train[:{percentage_download}%]")
+    dataset_val = load_dataset("CarperAI/openai_summarize_tldr", split=f"valid[:{percentage_download}%]")
 
     # Store data into prompt and label pairs
-    train_set = [(sample["prompt"], sample["label"]) for sample in dataset["train"]]
-    val_set = [(sample["prompt"], sample["label"]) for sample in dataset["valid"]]
+    train_set = [(sample["prompt"], sample["label"]) for sample in dataset_train]
+    val_set = [(sample["prompt"], sample["label"]) for sample in dataset_val]
 
     # Split contents into summaries and labels
     train_posts, train_summaries = zip(*train_set)

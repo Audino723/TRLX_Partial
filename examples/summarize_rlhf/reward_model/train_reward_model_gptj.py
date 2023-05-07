@@ -1,4 +1,5 @@
 import os
+import argparse
 
 import torch
 from datasets import load_dataset
@@ -86,7 +87,12 @@ def compute_metrics(eval_preds):
     return result
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+    parser = argparse.ArgumentParser(description="The amount of data receive from hugginface")
+    parser.add_argument("split", help="")
+    args = parser.parse_args()
+    percentage_download = float(args.split) * 100
+
     tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -126,8 +132,8 @@ if __name__ == "__main__":
 
     # Create the comparisons datasets
     data_path = "CarperAI/openai_summarize_comparisons"
-    train_pairs = create_comparison_dataset(data_path, "train")
-    val_pairs = create_comparison_dataset(data_path, "test")
+    train_pairs = create_comparison_dataset(data_path, f"train[:{percentage_download}%]")
+    val_pairs = create_comparison_dataset(data_path, f"test[:{percentage_download}%]")
 
     # Make pairwise datasets for training
     max_length = 550
